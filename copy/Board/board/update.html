@@ -130,6 +130,58 @@
                 'content'   : content,
             }
             
+            $.ajax({
+                url         : url,
+                type        : 'PUT',
+                data        : JSON.stringify(data),
+                contentType : 'application/json',        // 요청 컨텐츠 타입
+                dataType    : 'text',       // json으로 요청하고 받을때 제이슨 타입으로 성공이 200 코드인데 success의 문자열로 확인하려고 데이터타입을 텍스트로 변환해줘야한다.
+                                            // 응답 컨텐츠 타입
+                success : function(response, status){
+                    if(response == 'SUCCESS'){
+                        alert('수정이 완료되었습니다.')
+                        // 읽기 페이지 이동
+                        location.href = 'read.html?boardNo=' + boardNo
+                    }
+                },
+                error : function(request, status, error){
+                    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+                }
+            })
+        })
+
+        // 삭제 버튼 - 클릭 이벤트
+        $('.btn-delete').on('click', function(){
+            let check = confirm('정말로 삭제하시겠습니까?')
+
+            if(!check)
+                return
+
+            // 게시글 삭제 요청
+            let url = 'http://192.168.30.119:8080/api/board'
+
+            let data = {
+                'boardNo' : boardNo
+            }
+
+            $.ajax({
+                url         : url,
+                type        : 'DELETE',
+                data        : JSON.stringify(data),
+                contentType : 'application/json',
+                dataType    : 'text',
+                success     : function(response, status){
+                    alert(response)
+                    if(response == 'SUCCESS'){
+                        alert('삭제가 완료되었습니다.')
+                        // 목록 페이지로 이동
+                        location.href = 'list.html'
+                    }
+                },
+                error : function(request, status, error){
+                    alert("code:"+request.status+"\n"+"message:"+request.responseText+"error:"+error);
+                }
+            })
         })
     </script>
 </body>
