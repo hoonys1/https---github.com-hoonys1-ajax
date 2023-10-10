@@ -9,7 +9,7 @@
 </head>
 <body>
     <!-- 사이드 바 -->
-    <aside class="sidebar">
+    <aside id="sidebar">
         <div class="top flex main-end">
             <a href="javascript:;" id="btn-close">
                 <span>close</span>
@@ -142,6 +142,8 @@
 
     <!-- script -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <!-- sweetalert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../js/main.js"></script>
 
     <script>
@@ -179,10 +181,10 @@
                     $('#regDate').text(regDate + " / " + regTime)
 
                     const date2 = new Date(board.updDate)
-                    date2.setMinutes(date2.getMunutes() + kst)
+                    date2.setMinutes(date2.getMinutes() + kst)
                     const updDate = date2.toISOString().split("T")[0]
                     const updTime = date2.toISOString().split("T")[1].split(".")[0]
-                    $('#updDate').text(updDate = " / " + updTime)
+                    $('#updDate').text(updDate + " / " + updTime)
                 },
                 error       : function(request, status, error){
                     alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
@@ -197,14 +199,39 @@
 
         // 삭제 버튼 - 클릭 이벤트
         $('.btn-delete').on('click', function() {
-            let check = confirm('정말로 삭제하시겠습니까?')
-
-            if(!check)
-                return
+            // sweetalert - confirm
+            Swal.fire({
+                title: '정말로 삭제하시겠습니까?',
+                text: "삭제하면 되돌릴 수 없습니다!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelbuttonColor: '#d33',
+                confirmButtonText: '예',
+                cancelButtonText: '아니요',
+            }).then((result) => {
+                // result.isConfirmed : true [예]
+                // result.isConfirmed : false [아니요]
+                if(reslt.isConfirmed){
+                    deleteData()
+                    Swal.fire(
+                        '삭제 완료!',
+                        '게시글 삭제가 완료되었습니다.',
+                        'success'
+                    )
+                }
+            })
+            // let check = confirm('정말로 삭제하시겠습니까?')
+            
+            // if(!check)
+            //     return
+            
+        })
+        function deleteData() {
 
             // 게시글 삭제 요청
             let url = 'http://192.168.30.119:8080/api/board'
-
+            
             let data = {
                 'boardNo' : boardNo
             }
@@ -216,17 +243,25 @@
                 dataType    : 'text',               // 응답 컨텐츠 타입
                 dataType    : function(response, status) {
                     if(response == 'SUCCESS'){
-                        alert('삭제가 완료되었습니다.')
-                        // 목록 페이지로 이동
-                        location.href = 'list.html'
+                        // alert('삭제가 완료되었습니다.')
+                        Swal.fire(
+                            '삭제 완료!',
+                            '게시글 삭제가 완료되었습니다.',
+                            'success'
+                        ).then((result) => {
+                            if(result.isConfirmed){
+                                // 목록 페이지로 이동
+                                location.href = 'list.html'
+                            }
+                        })
                     }
                 },
                 error       : function(request, status, error){
                     alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
                 }
             })
-        })
-
+        }
+        
         // 댓글 목록 조회
         function getCommentList() {
             const url = 'http://192.168.30.119:8080/api/comment'
@@ -242,9 +277,9 @@
                 success : function(response) {
                     let commentList = response
 
-                    console.log(commnetList)
+                    console.log(commentList)
 
-                    let commnetData = ''
+                    let commentData = ''
                     for(let i = 0; i < commentList.length; i++) {
                         let comment = commentList[i]
 

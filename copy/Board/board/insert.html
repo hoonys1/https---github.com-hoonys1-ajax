@@ -69,7 +69,14 @@
                                      class="input-textarea"></textarea>
                         </td>
                     </tr>
+                    <tr>
+                        <td class="label">파일</td>
+                        <td class="data">
+                            <input type="file" name="file" id="file" multiple>
+                        </td>
+                    </tr>
                 </table>
+                
                 <div class="btn-box">
                     <div class="item">
                         <a href="list.html" class="btn">목록</a>
@@ -103,9 +110,9 @@
             let file = $('#file')[0]        // file이라는 리스트에 [0]번째 index에 파일을 넣어서    
             let files = file.files          // files(뒤에 있는거)라는 곳에 저 위에서 말한 [0] 번째 index의 값을 변수 files에 넣는다.
 
-            formData.appned('title', title)
-            formData.appned('writer', writer)
-            formData.appned('content', content)
+            formData.append('title', title)
+            formData.append('writer', writer)
+            formData.append('content', content)
 
             // 파일 데이터 추가
             for(let i = 0; i < files.length; i++){
@@ -121,23 +128,23 @@
             let url = 'http://192.168.30.119:8080/api/board'
             $.ajax({
                 url             :   url,
-                type            :   'PIST',
+                type            :   'POST',
                 // ajax타입?
-                // data         :   formData,
-                // contentType  :   false,
+//                data            :   formData,
+//                contentType     :   false,
                 // 제이슨json
                 // data            :   JSON.stringify(data),
                 // contentType     :   'application/json',
                 data            :   formData,
-                dontentType     :   flase,      // 'application/json',
+                contentType     :   false,      // 'application/json',
                 processData     :   false,      // 데이터를 쿼리스트링으로 변환 여부        데이터 컨텐츠 타입 자동 변환 여부
                                                 // 기본값(true)
                                                 // true -> contentType : application/x-www-form-urlencoded
                                                 // false -> contentType : 데이터를 자동으로 처리하지 않고 직접 지정
-                success         :   function(response) {
-                    if(response == 'SUCCESS') {
+                success         : function(response) {
+                    if( response == 'SUCCESS' ){
                         alert('등록이 완료되었습니다.')
-                        // 목표 페이지로 이동
+                        // 목록 페이지로 이동
                         location.href = 'list.html'
                     }
                 },

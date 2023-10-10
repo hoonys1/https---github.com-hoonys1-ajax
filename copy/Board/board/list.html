@@ -138,15 +138,15 @@
 
     <script>
         // 페이지 관련 변수
-        let page = 1        // 현재 페이지 번호
-        let rows = 10       // 페이지당 게시글 수
-        let pageCount = 10  // 노출 페이지 개수
-        let totalcount = 0  // 전체 게시글 수
+        let page = 1            // 현재 페이지 번호
+        let rows = 10           // 페이지당 게시글 수
+        let pageCount = 10      // 노출 페이지 개수
+        let totalCount = 0      // 전체 게시글 수
         // 검색 관련 변수
-        let searchType = 0  // 검색 조건
-        let keyword = 0     // 검색어
+        let searchType = 0      // 검색 조건
+        let keyword = ''        // 검색어
         // 순서 변수
-        let order = 0       // 기본값 : 최근 순
+        let order = 0           // 기본값 : 최근 순
 
         // 게시글 목록 요청
         // getList()
@@ -174,13 +174,13 @@
         }
 
         // 페이지 번호
-        function initPage(){    // initPage(page) 괄호 안에 들어있는것은 매게변수이다.
+        function initPage() {   // initPage(page) 괄호 안에 들어있는것은 매게변수이다.
             // 페이지 번호 정보
             let data = {
                 'pageNo'        : page,
                 'rows'          : rows,
                 'pageCount'     : pageCount,
-                'tptalCount'    : totalCount,
+                'totalCount'    : totalCount,
                 'searchType'    : searchType,
                 'keyword'       : keyword,
             }
@@ -211,7 +211,7 @@
                         let a = `<a href='javascript:;' class='page-no' data='${i}'>${i}</a>`
                         pagination += a
                     }
-
+                    
                     // 페이지 출력
                     $('.page-list').html(pagination)
                     // 화살표 페이지 번호
@@ -222,30 +222,31 @@
 
                     $('.page-no').removeClass('on')
                     // 현재 페이지 지정
-                    $('.page-no[data=' + page + ']').addClass('on')
+                    $('.page-no[data=' + page +']').addClass('on')
 
                     // 화살표 버튼 유효성 처리
                     $('.page-arrow').show()
-                    if(page == 1) {
+                    if( page == 1 ) {
                         $('#prev').hide()
                     }
-
-                    if(page == last) {
+                    
+                    if( page == last ) {
                         $('#next').hide()
                     }
 
                     // 여기에 이벤트를 등록해야 저 위에 포문에 생긴 html태그에 이벤트를 넣을수 있다.
-                    // $('.page-list').html(pagination) 이거 이후에 작성해줘서 script를 넣어주는 것이다.
+                    //$('.page-list').html(pagination) 이거 이후에 작성해줘서 script를 넣어주는것이다.
                     // 페이지 번호 클릭 이벤트
-                    // $('.page-no') 이건 클래스 선택자이다.
+                    // $('.page-no') 이건 클래스 선택자이다
                     $('.page-no, .page-arrow').on('click', function() {
-                        // 이벤트 제거 - 이벤트 정의가 싸이는 것을 방지
-                        $('.page-no, .page-arrow').off()
 
+                        // 이벤트 제거 - 이벤트 정의가 쌓이는 것을 방지
+                        $('.page-no, .page-arrow').off()
+                        
                         // 페이지 번호
                         let clickedPage = $(this).attr('data')      // attr 은 attribute
                         page = clickedPage  // 전역변수
-                        initPage()          // 페이지 번호 갱신     initPage(page) 괄호안에 page는 매게변수이다.
+                        initPage()          // 페이지 번호 갱신     initPage(page)괄호 안에 page는 매게변수이다.
                         getPageList()       // 페이지 목록 갱신
                     })
                 },
@@ -253,7 +254,8 @@
                     alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
                 }
             })
-        }
+
+        }        
 
         // 게시글 목록 - 페이징
         function getPageList() {
@@ -263,7 +265,7 @@
                 pageNo      : page,
                 rows        : rows,
                 pageCount   : pageCount,
-                searchType  : searchType,       // searchType 과 keyword가 같이 들어가 있어야 검색한 후 10개씩 보기에서 30개씩 보기를 하여도 검색 내용을 포함한 것들만 보여준다.
+                searchType  : searchType,       // searchType 과 keyword가 같이 들어가 있어야 검색한후 10개씩 보기에서 30개씩 보기를 하여도 검색 내용을 포함한 것들만 보여준다.
                 keyword     : keyword,
                 order       : order,
             }
@@ -272,13 +274,13 @@
                 url     :   url,
                 type    :   'GET',
                 data    :   data,
-                success :   function(response) {
+                success : function(response) {
                     let boardList = response
 
                     displayList( boardList )
                 },
-                error       : function(request, status, error){
-                    alert("code:"+request.status+"\n"+"message:"+sequest.responseText+"\n"+"error:"+error);
+                error           : function(request, status, error){
+                    alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
                 }
             })
         }
@@ -319,7 +321,7 @@
         }
 
         // 검색 클릭 이벤트
-        $('#btn-search').on('clich', function() {
+        $('#btn-search').on('click', function() {
             search()
         })
         // 페이지당 게시글 수 - 변경 이벤트
